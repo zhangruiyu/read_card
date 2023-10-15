@@ -60,16 +60,60 @@ class NativeResponse {
   NativeResponse._(this.params);
 
   /// create response from response pool
-  factory NativeResponse.create(String name, Map? argument) =>
+  factory NativeResponse.create(String name, Map<String, dynamic> argument) =>
       _nameAndResponseMapper[name]!(argument);
 }
 
 Map<String, _NativeResponseInvoker> _nameAndResponseMapper = {
-  "onSuccess": (Map? argument) => IdOnSuccessNativeResponse.fromMap(argument),
+  "onSuccess": (Map<String, dynamic> argument) =>
+      IdCardResponse.fromMap(argument),
 };
 
-typedef NativeResponse _NativeResponseInvoker(Map? argument);
+typedef NativeResponse _NativeResponseInvoker(Map<String, dynamic> argument);
 
-class IdOnSuccessNativeResponse extends NativeResponse {
-  IdOnSuccessNativeResponse.fromMap(Map? map) : super._(map);
+class IdCardResponse extends NativeResponse {
+  late String classify;
+  late String idType;
+  late String birthDate;
+  late String address;
+  late String nation;
+  late String sex;
+  late String name;
+  late String endTime;
+  late String signingOrganization;
+  late String beginTime;
+  late String idnum;
+  String? signingTimes;
+  String? otherIdNum;
+  String? enName;
+  String? countryCode;
+  String? version;
+  Uint8List? picture;
+
+  IdCardResponse.fromMap(Map<String, dynamic> json) : super._(json) {
+    this
+      ..classify = json['classify'] as String
+      ..idType = json['idType'] as String
+      ..birthDate = json['birthDate'] as String
+      ..address = json['address'] as String
+      ..nation = json['nation'] as String
+      ..sex = json['sex'] as String
+      ..name = json['name'] as String
+      ..endTime = json['endTime'] as String
+      ..signingOrganization = json['signingOrganization'] as String
+      ..beginTime = json['beginTime'] as String
+      ..idnum = json['idnum'] as String
+      ..signingTimes = json['signingTimes'] as String?
+      ..otherIdNum = json['otherIdNum'] as String?
+      ..enName = json['enName'] as String?
+      ..countryCode = json['countryCode'] as String?
+      ..version = json['version'] as String?
+      ..picture =
+          json['picture'] != null ? Uint8List.fromList(json['picture']) : null;
+  }
+
+  @override
+  String toString() {
+    return 'IdOnSuccessNativeResponse{classify: $classify, idType: $idType, birthDate: $birthDate, address: $address, nation: $nation, sex: $sex, name: $name, endTime: $endTime, signingOrganization: $signingOrganization, beginTime: $beginTime, idnum: $idnum, signingTimes: $signingTimes, otherIdNum: $otherIdNum, enName: $enName, countryCode: $countryCode, version: $version';
+  }
 }

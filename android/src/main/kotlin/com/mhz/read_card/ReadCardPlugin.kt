@@ -13,7 +13,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import java.lang.RuntimeException
 
 /** ReadCardPlugin */
-class ReadCardPlugin(var activity: Activity) : FlutterPlugin,
+class ReadCardPlugin() : FlutterPlugin,
     MethodCallHandler, ActivityAware {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
@@ -22,6 +22,7 @@ class ReadCardPlugin(var activity: Activity) : FlutterPlugin,
     private lateinit var channel: MethodChannel
     private lateinit var applicationContext: Context
     private var readIDFunc: ReadIDFunc? = null
+    private var activity: Activity? = null
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.applicationContext = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "read_card")
@@ -46,7 +47,7 @@ class ReadCardPlugin(var activity: Activity) : FlutterPlugin,
             if (readIDFunc != null) {
                 throw RuntimeException("使用完后请调用release方法")
             }
-            this.readIDFunc = ReadIDFunc(activity, result,channel)
+            this.readIDFunc = ReadIDFunc(activity!!, result,channel)
         } else if (call.method == "release") {
             this.readIDFunc = null
             ReadCardManager.eid.release()

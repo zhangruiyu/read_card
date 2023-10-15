@@ -17,6 +17,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home:  Root(),
+    );
+  }
+}
+class Root extends StatefulWidget {
+  const Root({super.key});
+
+  @override
+  State<Root> createState() => _RootState();
+}
+
+class _RootState extends State<Root> {
   bool initSuccess = false;
   final _readCardPlugin = ReadCard();
 
@@ -36,29 +53,26 @@ class _MyAppState extends State<MyApp> {
       initSuccess = initStatus;
     });
   }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              Text('初始化结果:$initSuccess'),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return const ReadID();
-                  }));
-                },
-                child: const Text('NFC读取身份证/elD电子证照'),
-              ),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            Text('初始化结果:$initSuccess'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                  return const ReadID();
+                }));
+              },
+              child: const Text('NFC读取身份证/elD电子证照'),
+            ),
+          ],
         ),
       ),
     );

@@ -5,11 +5,16 @@ class ReadIdResult {
 
   ReadIdResult(this.success, this.msg, this.errorCode);
 
-  factory ReadIdResult.fromJson(Map<String, dynamic> json) {
+  factory ReadIdResult.fromJson(Map<dynamic, dynamic> json) {
     return ReadIdResult(
       json['success'] as bool,
       json['msg'] as String?,
       json['errorCode'] as int?,
     );
+  }
+
+  @override
+  String toString() {
+    return 'ReadIdResult{success: $success, msg: $msg, errorCode: $errorCode}';
   }
 }

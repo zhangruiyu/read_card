@@ -1,10 +1,11 @@
 package com.mhz.read_card.func
 
+import android.R.attr.bitmap
 import android.app.Activity
+import android.graphics.Bitmap
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.text.TextUtils
-import android.view.View
 import com.eidlink.idocr.sdk.bean.EidlinkResult
 import com.eidlink.idocr.sdk.listener.OnGetResultListener
 import com.mhz.read_card.ReadCardManager
@@ -12,6 +13,8 @@ import com.mhz.read_card.utils.MyNfcManager
 import com.mhz.read_card.utils.NfcListener
 import com.zkteco.android.IDReader.IDCardPhoto
 import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayOutputStream
+
 
 const val NoNFCFailCode = 10000
 const val NFCOpenFailCode = 10001
@@ -32,11 +35,11 @@ class ReadIDFunc(
     }
 
     override fun onNfcEvent(tag: Tag?) {
-        result.success(
+        /*result.success(
             mapOf(
                 "success" to true,
             )
-        )
+        )*/
         /**
          * ReadCardManager.eid.readIDCard(tag, mResultListener);
          * 通用模式，同时支持二代证读取和eID电子证照读取
@@ -55,7 +58,7 @@ class ReadIDFunc(
     }
 
     override fun onNfcError(has: Boolean) {
-        if (has) {
+        /*if (has) {
             result.success(
                 mapOf(
                     "success" to false,
@@ -71,7 +74,7 @@ class ReadIDFunc(
                     "errorCode" to NoNFCFailCode
                 )
             )
-        }
+        }*/
     }
 
     private val mResultListener: OnGetResultListener = object : OnGetResultListener() {
@@ -85,14 +88,16 @@ class ReadIDFunc(
 //            )
             val identityBean = result.getIdentity()
             if (identityBean != null && !TextUtils.isEmpty(
-                    identityBean.getPicture()
+                    identityBean.picture
                 )
             ) {
-                val bt = IDCardPhoto.getIDCardPhoto(identityBean.getPicture())
+                val bt = IDCardPhoto.getIDCardPhoto(identityBean.picture)
                 if (bt != null) {
+                    val stream = ByteArrayOutputStream()
+                    bt.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    val byteArray = stream.toByteArray()
                     channel.invokeMethod(
                         "onSuccess", mapOf(
-                            "bt" to bt,
                             "classify" to identityBean.classify,
                             "idType" to identityBean.idType,
                             "birthDate" to identityBean.birthDate,
@@ -109,7 +114,7 @@ class ReadIDFunc(
                             "enName" to identityBean.enName,
                             "countryCode" to identityBean.countryCode,
                             "version" to identityBean.version,
-                            "picture" to identityBean.picture,
+                            "picture" to byteArray,
                         )
                     )
                 }
