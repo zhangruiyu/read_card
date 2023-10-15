@@ -20,3 +20,6 @@ envCode: 26814);
 ### 读取身份证信息
 
 [example](example/lib/read_id.dart)
+
+#### 记得把android项目下添加jniLibs和添加requestLegacyExternalStorage
+![img.png](img.png)
