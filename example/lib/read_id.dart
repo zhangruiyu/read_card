@@ -49,7 +49,7 @@ class _ReadIDState extends State<ReadID> {
       body: Column(
         children: [
           if (idCardResponse != null) ...[
-            Text(idCardResponse.toString()),
+            Container(margin: const EdgeInsets.all(20),child: Text(idCardResponse.toString())),
             if (idCardResponse!.picture != null)
               Image.memory(
                 idCardResponse!.picture!,

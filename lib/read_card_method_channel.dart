@@ -60,16 +60,16 @@ class NativeResponse {
   NativeResponse._(this.params);
 
   /// create response from response pool
-  factory NativeResponse.create(String name, Map<String, dynamic> argument) =>
+  factory NativeResponse.create(String name, Map<dynamic, dynamic> argument) =>
       _nameAndResponseMapper[name]!(argument);
 }
 
 Map<String, _NativeResponseInvoker> _nameAndResponseMapper = {
-  "onSuccess": (Map<String, dynamic> argument) =>
+  "onSuccess": (Map<dynamic, dynamic> argument) =>
       IdCardResponse.fromMap(argument),
 };
 
-typedef NativeResponse _NativeResponseInvoker(Map<String, dynamic> argument);
+typedef NativeResponse _NativeResponseInvoker(Map<dynamic, dynamic> argument);
 
 class IdCardResponse extends NativeResponse {
   late String classify;
@@ -90,7 +90,7 @@ class IdCardResponse extends NativeResponse {
   String? version;
   Uint8List? picture;
 
-  IdCardResponse.fromMap(Map<String, dynamic> json) : super._(json) {
+  IdCardResponse.fromMap(Map<dynamic, dynamic> json) : super._(json) {
     this
       ..classify = json['classify'] as String
       ..idType = json['idType'] as String
@@ -108,8 +108,7 @@ class IdCardResponse extends NativeResponse {
       ..enName = json['enName'] as String?
       ..countryCode = json['countryCode'] as String?
       ..version = json['version'] as String?
-      ..picture =
-          json['picture'] != null ? Uint8List.fromList(json['picture']) : null;
+      ..picture = json['picture'] as Uint8List?;
   }
 
   @override
