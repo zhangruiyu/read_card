@@ -1,6 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'model/read_id_result.dart';
 import 'read_card_method_channel.dart';
 
 abstract class ReadCardPlatform extends PlatformInterface {
@@ -33,7 +32,7 @@ abstract class ReadCardPlatform extends PlatformInterface {
     throw UnimplementedError('initEid() has not been implemented.');
   }
 
-  Future<ReadIdResult> readId() {
+  Future<bool> readId() {
     throw UnimplementedError('readId() has not been implemented.');
   }
   Future<void> release() {

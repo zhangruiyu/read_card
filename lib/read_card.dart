@@ -1,4 +1,4 @@
-import 'model/read_id_result.dart';
+
 import 'read_card_platform_interface.dart';
 
 class ReadCard {
@@ -26,7 +26,7 @@ class ReadCard {
     );
   }
 
-  Future<ReadIdResult> readId() {
+  Future<bool> readId() {
     return ReadCardPlatform.instance.readId();
   }
 

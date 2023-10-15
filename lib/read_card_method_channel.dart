@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'model/read_id_result.dart';
 import 'read_card_platform_interface.dart';
 
 /// An implementation of [ReadCardPlatform] that uses method channels.
@@ -43,9 +42,9 @@ class MethodChannelReadCard extends ReadCardPlatform {
   }
 
   @override
-  Future<ReadIdResult> readId() async {
-    final result = await methodChannel.invokeMethod('readId');
-    return ReadIdResult.fromJson(result!);
+  Future<bool> readId() async {
+    final result = await methodChannel.invokeMethod<bool>('readId');
+    return result!;
   }
 
   @override
@@ -66,12 +65,14 @@ class NativeResponse {
 
 Map<String, _NativeResponseInvoker> _nameAndResponseMapper = {
   "onSuccess": (Map<dynamic, dynamic> argument) =>
-      IdCardResponse.fromMap(argument),
+      IdCardSuccessResponse.fromMap(argument),
+  "onFailed": (Map<dynamic, dynamic> argument) =>
+      IdCardFailedResponse.fromMap(argument),
 };
 
 typedef NativeResponse _NativeResponseInvoker(Map<dynamic, dynamic> argument);
 
-class IdCardResponse extends NativeResponse {
+class IdCardSuccessResponse extends NativeResponse {
   late String classify;
   late String idType;
   late String birthDate;
@@ -90,7 +91,7 @@ class IdCardResponse extends NativeResponse {
   String? version;
   Uint8List? picture;
 
-  IdCardResponse.fromMap(Map<dynamic, dynamic> json) : super._(json) {
+  IdCardSuccessResponse.fromMap(Map<dynamic, dynamic> json) : super._(json) {
     this
       ..classify = json['classify'] as String
       ..idType = json['idType'] as String
@@ -114,5 +115,24 @@ class IdCardResponse extends NativeResponse {
   @override
   String toString() {
     return 'IdOnSuccessNativeResponse{classify: $classify, idType: $idType, birthDate: $birthDate, address: $address, nation: $nation, sex: $sex, name: $name, endTime: $endTime, signingOrganization: $signingOrganization, beginTime: $beginTime, idnum: $idnum, signingTimes: $signingTimes, otherIdNum: $otherIdNum, enName: $enName, countryCode: $countryCode, version: $version';
+  }
+}
+
+class IdCardFailedResponse extends NativeResponse {
+  late String msg;
+  late int errorCode;
+  String? bizId;
+
+
+  IdCardFailedResponse.fromMap(Map<dynamic, dynamic> json) : super._(json) {
+    this
+      ..msg = json['msg'] as String
+      ..errorCode = json['errorCode'] as int
+      ..bizId = json['bizId'] as String?;
+  }
+
+  @override
+  String toString() {
+    return 'IdCardFailedResponse{msg: $msg, errorCode: $errorCode, bizId: $bizId}';
   }
 }

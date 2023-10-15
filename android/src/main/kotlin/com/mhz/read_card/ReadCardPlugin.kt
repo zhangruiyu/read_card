@@ -44,10 +44,8 @@ class ReadCardPlugin() : FlutterPlugin,
             }
 
         } else if (call.method == "readId") {
-            if (readIDFunc != null) {
-                throw RuntimeException("使用完后请调用release方法")
-            }
-            this.readIDFunc = ReadIDFunc(activity!!, result,channel)
+            this.readIDFunc = ReadIDFunc(activity!!,channel)
+            result.success(true)
         } else if (call.method == "release") {
             this.readIDFunc = null
             ReadCardManager.eid.release()

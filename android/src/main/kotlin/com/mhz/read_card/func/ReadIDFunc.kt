@@ -20,11 +20,10 @@ const val NoNFCFailCode = 10000
 const val NFCOpenFailCode = 10001
 
 class ReadIDFunc(
-    private val activity: Activity,
-    private val result: MethodChannel.Result,
-    private val channel: MethodChannel
+        private val activity: Activity,
+        private val channel: MethodChannel
 ) :
-    NfcListener {
+        NfcListener {
     private var mNfcAdapter: NfcAdapter? = null
 
     //读卡开始时间
@@ -35,11 +34,7 @@ class ReadIDFunc(
     }
 
     override fun onNfcEvent(tag: Tag?) {
-        /*result.success(
-            mapOf(
-                "success" to true,
-            )
-        )*/
+
         /**
          * ReadCardManager.eid.readIDCard(tag, mResultListener);
          * 通用模式，同时支持二代证读取和eID电子证照读取
@@ -58,23 +53,23 @@ class ReadIDFunc(
     }
 
     override fun onNfcError(has: Boolean) {
-        /*if (has) {
-            result.success(
-                mapOf(
-                    "success" to false,
+        if (has) {
+            channel.invokeMethod(
+                    "onFailed", mapOf(
                     "msg" to "当前NFC未启用",
                     "errorCode" to NFCOpenFailCode
-                )
+                    )
             )
+
         } else {
-            result.success(
-                mapOf(
-                    "success" to false,
+            channel.invokeMethod(
+                    "onFailed", mapOf(
                     "msg" to "设备不支持NFC",
                     "errorCode" to NoNFCFailCode
-                )
+                    )
             )
-        }*/
+
+        }
     }
 
     private val mResultListener: OnGetResultListener = object : OnGetResultListener() {
@@ -88,8 +83,8 @@ class ReadIDFunc(
 //            )
             val identityBean = result.getIdentity()
             if (identityBean != null && !TextUtils.isEmpty(
-                    identityBean.picture
-                )
+                            identityBean.picture
+                    )
             ) {
                 val bt = IDCardPhoto.getIDCardPhoto(identityBean.picture)
                 if (bt != null) {
@@ -97,7 +92,7 @@ class ReadIDFunc(
                     bt.compress(Bitmap.CompressFormat.PNG, 100, stream)
                     val byteArray = stream.toByteArray()
                     channel.invokeMethod(
-                        "onSuccess", mapOf(
+                            "onSuccess", mapOf(
                             "classify" to identityBean.classify,
                             "idType" to identityBean.idType,
                             "birthDate" to identityBean.birthDate,
@@ -115,7 +110,7 @@ class ReadIDFunc(
                             "countryCode" to identityBean.countryCode,
                             "version" to identityBean.version,
                             "picture" to byteArray,
-                        )
+                    )
                     )
                 }
 
@@ -125,11 +120,11 @@ class ReadIDFunc(
 
         override fun onFailed(code: Int, msg: String, biz_id: String) {
             channel.invokeMethod(
-                "onFailed", mapOf(
+                    "onFailed", mapOf(
                     "msg" to msg,
                     "errorCode" to code,
                     "bizId" to biz_id,
-                )
+            )
             )
 
         }

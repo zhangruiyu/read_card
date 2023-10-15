@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:read_card/model/read_id_result.dart';
 import 'package:read_card/read_card.dart';
 import 'package:read_card/read_card_method_channel.dart';
 
@@ -15,7 +14,8 @@ class ReadID extends StatefulWidget {
 class _ReadIDState extends State<ReadID> {
   final readCard = ReadCard();
   late final StreamSubscription<NativeResponse> subscription;
-  IdCardResponse? idCardResponse;
+  IdCardSuccessResponse? idCardResponse;
+
   @override
   void initState() {
     super.initState();
@@ -24,12 +24,14 @@ class _ReadIDState extends State<ReadID> {
     }();
 
     subscription = MethodChannelReadCard.onDartMessageListener.listen((event) {
-      print('123123213 ${event.params}');
-      if (event is IdCardResponse) {
+      if (event is IdCardSuccessResponse) {
         setState(() {
           idCardResponse = event;
         });
-      } else {}
+      } else if(event is IdCardFailedResponse){
+        ///处理错误逻辑,除了错误码里的，新增了2个错误码，10000（设备没有NFC），10001（NFC没打开）
+        debugPrint('错误了:${event.toString()}');
+      }
     });
   }
 
